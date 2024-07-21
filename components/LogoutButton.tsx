@@ -9,7 +9,11 @@ const LogoutButton = () => {
 		<Button
 			variant={'destructive'}
 			onClick={() =>
-				logout({ logoutParams: { returnTo: 'http://localhost:3000/' } })
+				logout({
+					logoutParams: {
+						returnTo: 'https://issue-tracker-beta-blue.vercel.app/',
+					},
+				})
 			}
 		>
 			Log Out

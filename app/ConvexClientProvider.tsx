@@ -22,7 +22,7 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
 			domain='dev-qo7fji7x5tan0hse.us.auth0.com'
 			clientId='o9daqrZOTWzLqXIAp4GlYmAKYTGGvgYE'
 			authorizationParams={{
-				redirect_uri: 'http://localhost:3000/',
+				redirect_uri: 'https://issue-tracker-beta-blue.vercel.app/',
 			}}
 			useRefreshTokens={true}
 			cacheLocation='localstorage'
