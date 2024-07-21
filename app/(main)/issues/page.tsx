@@ -1,21 +1,11 @@
 import { Button } from '@/components/ui/button';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table';
 import prisma from '@/prisma/client';
+import { Status } from '@prisma/client';
 import { PlusCircle } from 'lucide-react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 import FilterIssues from './_components/FilterIssues';
 import IssuesTable from './_components/IssuesTable';
-import { Status } from '@prisma/client';
 import Pagination from './Pagination';
-import { Metadata } from 'next';
 
 export default async function IssuesPage({
 	searchParams,

@@ -1,6 +1,8 @@
-'use client';
-import React from 'react';
-import IssueForm from '../_components/IssueForm';
+import dynamic from 'next/dynamic';
+
+const IssueForm = dynamic(() => import('../_components/IssueForm'), {
+	ssr: false,
+});
 
 export default function page() {
 	return (
