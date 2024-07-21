@@ -6,12 +6,20 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import { DeleteButton } from '../_components/DeleteButton';
+import { Metadata } from 'next';
+import { Issue } from '@prisma/client';
+import { cache } from 'react';
+
+const fetchUser = cache((issueId: string) =>
+	prisma.issue.findUnique({
+		where: {
+			id: issueId,
+		},
+	})
+);
 
 export default async function page({ params }: { params: { id: string } }) {
-	const issue = await prisma.issue.findUnique({
-		where: { id: params.id },
-	});
-
+	const issue = await fetchUser(params.id);
 	if (!issue) notFound();
 	return (
 		<div className='lg:px-20 px-4 py-4 flex flex-col md:flex-row gap-y-9'>
@@ -46,4 +54,11 @@ export default async function page({ params }: { params: { id: string } }) {
 			</div>
 		</div>
 	);
+}
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+	const issue = await fetchUser(params.id);
+	return {
+		title: issue?.title,
+	};
 }

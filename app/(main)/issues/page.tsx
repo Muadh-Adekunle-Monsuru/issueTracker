@@ -10,79 +10,67 @@ import {
 import prisma from '@/prisma/client';
 import { PlusCircle } from 'lucide-react';
 import Link from 'next/link';
-
 import { cn } from '@/lib/utils';
-export default async function IssuesPage() {
-	const issues = await prisma.issue.findMany();
+import FilterIssues from './_components/FilterIssues';
+import IssuesTable from './_components/IssuesTable';
+import { Status } from '@prisma/client';
+import Pagination from './Pagination';
+import { Metadata } from 'next';
+
+export default async function IssuesPage({
+	searchParams,
+}: {
+	searchParams: { search: Status; orderBy: string; asc: string; page: string };
+}) {
+	const statuses = Object.values(Status);
+
+	const page = parseInt(searchParams.page) || 1;
+	const pageSize = 5;
+
+	const status = statuses.includes(searchParams.search)
+		? searchParams.search
+		: undefined;
+	const orderBy = searchParams.orderBy
+		? { [searchParams.orderBy]: searchParams.asc == 'true' ? 'asc' : 'desc' }
+		: undefined;
+
+	const issues = await prisma.issue.findMany({
+		where: { status },
+		orderBy,
+		skip: (page - 1) * pageSize,
+		take: pageSize,
+	});
+
+	const issueCount = await prisma.issue.count({
+		where: { status },
+	});
 	return (
-		<div className='lg:mx-20 flex flex-col gap-5'>
-			<h1>Issues Page</h1>
-			<Button asChild className='max-w-32'>
-				<Link href={'/issues/new'} className='flex items-center gap-3'>
-					<span>New Issue</span>
-					<span>
-						<PlusCircle className='size-4' />
-					</span>
-				</Link>
-			</Button>
-			<Table className='border rounded-lg '>
-				<TableHeader>
-					<TableRow className='bg-gray-100 '>
-						<TableHead className='w-[200px]'>Issue</TableHead>
-						<TableHead className='hidden md:table-cell '>Description</TableHead>
-						<TableHead className='w-[150px] hidden md:table-cell'>
-							Status
-						</TableHead>
-						<TableHead className='hidden md:table-cell'>Created</TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{issues.reverse().map((issue) => (
-						<TableRow key={issue.id}>
-							<TableCell className='font-medium'>
-								<Link
-									href={`/issues/${issue.id}`}
-									className='hover:text-gray-500 transition duration-300 w-full text-lg md:text-sm'
-								>
-									{issue.title}
-									<div
-										className={cn(
-											'block md:hidden lowercase rounded-md font-medium max-w-24 text-center py-1 text-sm',
-											issue.status == 'OPEN' && 'text-green-700 bg-green-100 ',
-											issue.status == 'CLOSED' && 'text-gray-700 bg-gray-100',
-											issue.status == 'IN_PROGRESS' &&
-												'text-yellow-700 bg-yellow-100'
-										)}
-									>
-										{issue.status}
-									</div>
-								</Link>
-							</TableCell>
-							<TableCell className='hidden md:table-cell'>
-								<p className='truncate w-[300px]'>{issue.description}</p>
-							</TableCell>
-							<TableCell className='lowercase hidden md:table-cell'>
-								<p
-									className={cn(
-										'rounded-md font-medium text-center',
-										issue.status == 'OPEN' && 'text-green-700 bg-green-100 ',
-										issue.status == 'CLOSED' && 'text-gray-700 bg-gray-100',
-										issue.status == 'IN_PROGRESS' &&
-											'text-yellow-700 bg-yellow-100'
-									)}
-								>
-									{issue.status}
-								</p>
-							</TableCell>
-							<TableCell className='hidden md:table-cell'>
-								{issue.createdAt.toDateString()}
-							</TableCell>
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
+		<div className='lg:mx-20 flex flex-col gap-5 px-5'>
+			<h1 className='text-xl py-5'>Issues List</h1>
+			<div className='flex justify-between'>
+				<FilterIssues />
+				<Button asChild className='max-w-32'>
+					<Link href={'/issues/new'} className='flex items-center gap-3'>
+						<span>New Issue</span>
+						<span>
+							<PlusCircle className='size-4' />
+						</span>
+					</Link>
+				</Button>
+			</div>
+			<IssuesTable issues={issues} searchParams={searchParams} />
+			<Pagination
+				itemCount={issueCount}
+				pageSize={pageSize}
+				currentPage={page}
+			/>
 		</div>
 	);
 }
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+	title: 'Issues',
+	description: 'List of all project issues',
+};

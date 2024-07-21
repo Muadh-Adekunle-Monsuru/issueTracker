@@ -10,7 +10,8 @@ import { Authenticated, Unauthenticated, AuthLoading } from 'convex/react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import UserButton from '@/components/UserButton';
-
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 const links = [
 	{ label: 'Dashboard', href: '/dashboard' },
 	{ label: 'Issues', href: '/issues' },
@@ -18,7 +19,7 @@ const links = [
 
 export default function NavBar() {
 	const pathname = usePathname();
-	const { user, isAuthenticated } = useAuth0();
+	const { user, isAuthenticated, isLoading } = useAuth0();
 
 	return (
 		<nav className='flex py-3 px-5 lg:px-20 border-b border-gray-400 items-center justify-between'>
@@ -55,11 +56,12 @@ export default function NavBar() {
 						<UserButton />
 					</>
 				)}
-				{!isAuthenticated && (
+				{!isAuthenticated && !isLoading && (
 					<>
 						<LoginButton />
 					</>
 				)}
+				{isLoading && <Skeleton width={'3rem'} />}
 			</div>
 		</nav>
 	);
