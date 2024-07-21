@@ -67,10 +67,3 @@ export default async function IssuesPage({
 		</div>
 	);
 }
-
-export const dynamic = 'force-dynamic';
-
-export const metadata: Metadata = {
-	title: 'Issues',
-	description: 'List of all project issues',
-};
