@@ -15,7 +15,6 @@ export async function POST(request: NextRequest) {
 
 	const data = await prisma.issue.create({
 		data: {
-			id: uuidv4(),
 			title: body.title,
 			description: body.description,
 		},
