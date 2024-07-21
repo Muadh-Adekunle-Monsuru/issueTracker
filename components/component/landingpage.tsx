@@ -103,7 +103,7 @@ export function Landingpage() {
 												Collaborative Workflow
 											</h3>
 											<p className='text-muted-foreground'>
-												Streamline your team's collaboration with built-in
+												Streamline your teams collaboration with built-in
 												features like comments, notifications, and assignments.
 											</p>
 										</div>
